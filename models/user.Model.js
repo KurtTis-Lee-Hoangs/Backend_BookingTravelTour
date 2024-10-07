@@ -1,18 +1,18 @@
-import mongoose from "mongoose";
+import mongodb from "../config/mongoose.js";
 
-const userSchema = new mongoose.Schema(
+const userSchema = new mongodb.Schema(
   {
-    UserID: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     Name: {
       type: String,
       required: true,
     },
-    Age: {
-      type: Number,
+    Gender: {
+      type: String,
+      enum: ["Male", "Female"],
+      required: true,
+    },
+    Birthday: {
+      type: Date,
       min: 12,
     },
     Phone: {
@@ -30,5 +30,5 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+const User = mongodb.model("User", userSchema);
 export default User;

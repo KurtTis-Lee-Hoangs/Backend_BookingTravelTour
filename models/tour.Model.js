@@ -1,33 +1,6 @@
-import mongoose from "mongoose";
+import mongodb from "../config/mongoose.js";
 
-// const tourSchema = new mongoose.Schema({
-//     TourID: {
-//         type: String,
-//         required: true,
-//         unique: true,
-//     },
-//     Price: {
-//         type: Number,
-//         required: true,
-//     },
-//     Description: {
-//         type: String,
-//         required: true,
-//     },
-//     GroupSize: {
-//         type: Number,
-//         min: 1,
-//     },
-//     Photo: {
-//         type: String,
-//         required: true,
-//     },
-//     Tag: {
-//         type: String,
-//         required: true,
-//     },
-// }, {timestamps: true})
-const tourSchema = new mongoose.Schema(
+const tourSchema = new mongodb.Schema(
   {
     title: {
       type: String,
@@ -54,13 +27,9 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    maxGroupSize: {
-      type: Number,
-      required: true,
-    },
     reviews: [
       {
-        type: mongoose.Types.ObjectId,
+        type: mongodb.Types.ObjectId,
         ref: "Review",
       },
     ],
@@ -78,5 +47,5 @@ const tourSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Tour = mongoose.model("Tour", tourSchema);
+const Tour = mongodb.model("Tour", tourSchema);
 export default Tour;
