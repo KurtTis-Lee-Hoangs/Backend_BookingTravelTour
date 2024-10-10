@@ -1,6 +1,6 @@
-import mongodb from "../config/mongoose.js";
+import mongoose from "../config/mongoose.js";
 
-const tourSchema = new mongodb.Schema(
+const tourSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -29,7 +29,7 @@ const tourSchema = new mongodb.Schema(
     },
     reviews: [
       {
-        type: mongodb.Types.ObjectId,
+        type: mongoose.Types.ObjectId,
         ref: "Review",
       },
     ],
@@ -47,5 +47,5 @@ const tourSchema = new mongodb.Schema(
   { timestamps: true }
 );
 
-const Tour = mongodb.model("Tour", tourSchema);
+const Tour = mongoose.model("Tour", tourSchema);
 export default Tour;

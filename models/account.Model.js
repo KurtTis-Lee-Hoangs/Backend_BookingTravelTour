@@ -1,6 +1,6 @@
-import mongodb from "../config/mongoose.js";
+import mongoose from "../config/mongoose.js";
 
-const accountSchema = new mongodb.Schema({
+const accountSchema = new mongoose.Schema({
     Username: {
         type: String,
         unique: true,
@@ -24,5 +24,5 @@ const accountSchema = new mongodb.Schema({
     }
 } ,{timestamps: true})
 
-const Account = mongodb.model("Account", accountSchema)
-export default Account
+const Account = mongoose.model("Account", accountSchema)
+export default Account;

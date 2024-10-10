@@ -1,6 +1,6 @@
-import mongodb from "../config/mongoose.js";
+import mongoose from "../config/mongoose.js";
 
-const postModel = new mongodb.Schema({
+const postModel = new mongoose.Schema({
     idPost: {
         type: Number,
         required: true,
@@ -30,5 +30,5 @@ const postModel = new mongodb.Schema({
     }
 })
 
-const Post = mongodb.model("Posts", postModel);
+const Post = mongoose.model("Posts", postModel);
 export default Post;

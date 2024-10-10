@@ -1,6 +1,6 @@
-import mongodb from "../config/mongoose.js";
+import mongoose from "../config/mongoose.js";
 
-const userSchema = new mongodb.Schema(
+const userSchema = new mongoose.Schema(
   {
     Name: {
       type: String,
@@ -35,5 +35,5 @@ const userSchema = new mongodb.Schema(
   { timestamps: true }
 );
 
-const User = mongodb.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 export default User;
