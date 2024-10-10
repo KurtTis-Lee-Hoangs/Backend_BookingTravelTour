@@ -1,16 +1,16 @@
 import User from "../models/user.Model.js";
 
-export const createUser = async (req, res) => {
-  const newUser = new User(req.body);
-  try {
-    const saved = await newUser.save();
-    res
-      .status(200)
-      .json({ success: true, messgae: "Successfully created.", data: saved });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+// export const createUser = async (req, res) => {
+//   const newUser = new User(req.body);
+//   try {
+//     const saved = await newUser.save();
+//     res
+//       .status(200)
+//       .json({ success: true, messgae: "Successfully created.", data: saved });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
 
 export const updateUser = async (req, res) => {
   try {

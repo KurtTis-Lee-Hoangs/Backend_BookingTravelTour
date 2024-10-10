@@ -1,20 +1,24 @@
 import mongodb from "../config/mongoose.js";
 
 const accountSchema = new mongodb.Schema({
-    username: {
+    Username: {
         type: String,
         unique: true,
         required: true,
     },
-    password: {
+    Password: {
         type: String,
         required: true,
     },
-    role: {
+    Role: {
         type: String,
         default: "user",
     },
-    active: {
+    Email: {
+        type: String,
+        required: true,
+    },
+    Active: {
         type: Boolean,
         default: false,
     }

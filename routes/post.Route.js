@@ -6,12 +6,12 @@ const router = express.Router()
 //create a post
 router.post('/create-post', createPost)
 //get all posts
-router.get('/posts', getAllPosts)
+router.get('/', getAllPosts)
 //get post
 router.get('/:id', getPost)
 //delete post
-router.delete('/:id', deletePost)
+router.delete('/delete/:id', deletePost)
 //update post
-router.put('/:id', updatePost)
+router.put('/update/:id', updatePost)
 
 export default router;

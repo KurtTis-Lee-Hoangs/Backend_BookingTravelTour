@@ -1,12 +1,12 @@
 import Tour from "../models/tour.Model.js";
 
 export const createTour = async (req, res) => {
-  const newUser = new Tour(req.body);
+  const newTour = new Tour(req.body);
   try {
-    const datasaved = await newUser.save();
+    const datasaved = await newTour.save();
     res.status(200).json({
       success: true,
-      messgae: "Successfully created.",
+      message: "Successfully created.",
       data: datasaved,
     });
   } catch (error) {
@@ -32,7 +32,7 @@ export const updateTour = async (req, res) => {
     } else {
       res.status(200).json({
         success: true,
-        messgae: "Successfully updated.",
+        message: "Successfully updated.",
         data: idTour,
       });
     }
@@ -50,7 +50,7 @@ export const deleteTour = async (req, res) => {
     } else {
       res.status(200).json({
         success: true,
-        messgae: "Successfully delete tour.",
+        message: "Successfully delete tour.",
         data: tour,
       });
     }
@@ -71,7 +71,7 @@ export const getAllTours = async (req, res) => {
       res.status(200).json({
         success: true,
         count: tours.length,
-        messgae: "Successfully get all tours.",
+        message: "Successfully get all tours.",
         data: tours,
       });
     }
@@ -89,7 +89,7 @@ export const getTour = async (req, res) => {
     } else {
       res.status(200).json({
         success: true,
-        messgae: "Successfully get tour information.",
+        message: "Successfully get tour information.",
         data: tour,
       });
     }

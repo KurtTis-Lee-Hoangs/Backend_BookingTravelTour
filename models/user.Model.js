@@ -13,15 +13,20 @@ const userSchema = new mongodb.Schema(
     },
     Birthday: {
       type: Date,
-      min: 12,
     },
     Phone: {
       type: Number,
       required: true,
       unique: true,
     },
+    Email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     Address: {
       type: String,
+      required: true
     },
     Photo: {
       type: String,

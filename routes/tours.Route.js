@@ -16,8 +16,8 @@ router.get("/", getAllTours);
 //get tour
 router.get("/:id", getTour);
 //update tour
-router.put("/:id", updateTour);
+router.put("/update/:id", updateTour);
 //delete tour
-router.delete("/:id", deleteTour);
+router.delete("/delete/:id", deleteTour);
 
 export default router;
