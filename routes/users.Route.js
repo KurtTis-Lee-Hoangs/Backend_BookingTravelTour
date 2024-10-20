@@ -1,4 +1,4 @@
-import { deleteUser, getAllUser, getOneUser, updateUser } from "../controllers/user.Controller.js";
+import { deleteUser, getAllUser, getOneUser, updateUser, forgotPasswordCtrl, resetPasswordCtrl} from "../controllers/user.Controller.js";
 import express from 'express'
 
 const router = express.Router()
@@ -13,5 +13,7 @@ router.get('/:id', getOneUser)
 router.put('/:id', updateUser)
 //delete a user
 router.delete('/:id', deleteUser)
+router.post('/forgot-password', forgotPasswordCtrl)
+router.get('/reset-password/:token', resetPasswordCtrl);
 
 export default router;

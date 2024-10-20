@@ -1,5 +1,5 @@
 import express from 'express'
-import {deleteAccount, getAllAccount, SignIn, SignUp } from '../controllers/account.Controller.js'
+import {deleteAccount, getAccount, getAllAccount, SignUp, updateAccount } from '../controllers/account.Controller.js'
 
 const router = express.Router()
 
@@ -7,11 +7,11 @@ const router = express.Router()
 router.post('/sign-up', SignUp)
 //get all user
 router.get('/', getAllAccount)
-//create account admin
-// router.post('/admin/create-account', createAccount)
 //delete account
 router.delete('/:id', deleteAccount)
-
-router.put('/:id')
+//update account
+router.put('/:id', updateAccount)
+//get account
+router.get('/:id', getAccount)
 
 export default router;

@@ -1,71 +1,9 @@
 import Account from "../models/account.Model.js";
+import User from "../models/user.Model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import {sendVerificationEmail} from "../utils/sendEmail.js"
-
-export const SignIn = async (req, res) => {
-  const email = req.body.Email;
-  const pw = req.body.Password;
-  if (!email || !pw ) {
-    return res.status(400).json({
-      success: false,
-      message: "Email, Password are required.",
-    });
-  }
-  try {
-    const mail = await Account.findOne({ Email: req.body.Email });
-
-    if (!mail) {
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: "Email not found.",
-          data: mail.Password,
-        });
-    }
-
-    const checkPassword = bcrypt.compare(pw, mail.Password);
-
-    if (!checkPassword) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Incorrect email or password." });
-    }
-
-    const { Password, Role, ...rest } = mail._doc;
-
-    //create jwt token
-    const token = jwt.sign(
-      {
-        id: mail._id,
-        Role: mail.Role,
-      },
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: "7d" }
-    );
-
-    res
-      .cookie("accessToken", token, {
-        httpOnly: true,
-        expires: token.expiresIn,
-      })
-      .status(200)
-      .json({
-        success: true,
-        message: "Successfully login",
-        data: {
-          ...rest,
-        },
-      });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error,
-    });
-  }
-};
 
 export const SignUp = asyncHandler(async (req, res) => {
   const { Username, Email, Password } = req.body;
@@ -74,9 +12,15 @@ export const SignUp = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, message: 'Email and password are required.' });
   }
   try {
-    // Check if the user already exists
-    const existingUser = await Account.findOne({ Email });
+    const existingUser = await Account.findOne({ Username });
     if (existingUser) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Username is already registered." });
+    }
+    // Check if the user already exists
+    const existingEmail = await Account.findOne({ Email });
+    if (existingEmail) {
       return res.status(400).json({ success: false, message: 'Email is already registered.' });
     }
     // Create a new account
@@ -92,6 +36,23 @@ export const SignUp = asyncHandler(async (req, res) => {
     if (!savedAccount) {
       return res.status(500).json({ success: false, message: 'Account creation failed.' });
     }
+    const user = new User({
+      Email,
+      AccountId: savedAccount._id, // liên kết với account vừa tạo
+      Name: req.body.Name,
+      Gender:  req.body.Gender,
+      Birhday: "",
+      Phone:  req.body.Phone,
+      Address:  req.body.Address,
+      Photo: ""
+    });
+    const savedUser = await user.save();
+    if (!savedUser) {
+      return res
+        .status(500)
+        .json({ success: false, message: "User creation failed." });
+    }
+
     // Generate a verification token
     const verificationToken = jwt.sign({ userId: savedAccount._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: '1h',
@@ -109,6 +70,25 @@ export const SignUp = asyncHandler(async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
+
+export const getAccount = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const acc = await Account.findById(id);
+    if (!acc) {
+      res.status(404).json({ success: false, message: "Account not found." });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Successfully get account information.",
+        data: acc,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 
 export const getAllAccount = async (req, res) => {
   try {
@@ -135,20 +115,34 @@ export const getAllAccount = async (req, res) => {
 export const deleteAccount = async (req, res) => {
   try {
     const id = req.params.id;
+
+    // Tìm và xóa tài khoản
     const acc = await Account.findByIdAndDelete(id);
     if (!acc) {
-      res.status(404).json({ success: false, message: "Account not found." });
-    } else {
-      res.status(200).json({
-        success: true,
-        message: "Successfully delete account.",
-        data: acc,
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "Account not found." });
     }
+
+    // Tìm và xóa user có email tương ứng
+    const user = await User.findOneAndDelete({ Email: acc.Email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found." });
+    }
+
+    // Nếu cả account và user đều bị xóa thành công
+    res.status(200).json({
+      success: true,
+      message: "Successfully deleted account and user.",
+      data: { account: acc, user: user },
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 export const updateAccount = async (req, res) => {
   try {
