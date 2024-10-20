@@ -59,7 +59,9 @@ export const deleteUser = async (req, res) => {
 
 export const getAllUser = async (req, res) => {
   try {
-    const user = await User.find();
+    const page = parseInt(req.query.page);
+    const user = await User.find().limit(10)
+    .skip(page * 10);;
     if (!user) {
       return res
         .status(404)
@@ -68,6 +70,7 @@ export const getAllUser = async (req, res) => {
       res.status(200).json({
         success: true,
         messgae: "Successfully get all users.",
+        total: user.length,
         data: user,
       });
     }

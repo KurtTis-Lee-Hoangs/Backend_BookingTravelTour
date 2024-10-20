@@ -70,7 +70,7 @@ export const getAllPosts = async (req, res) => {
     } else {
       res.status(200).json({
         success: true,
-        count: posts.length,
+        total: posts.length,
         messgae: "Successfully get all posts.",
         data: posts,
       });

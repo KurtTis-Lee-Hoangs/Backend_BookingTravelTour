@@ -10,14 +10,14 @@ import {
 const router = express.Router();
 
 //create a tour
-router.post("/createTour", createTour);
+router.post("/", createTour);
 //get all tours
 router.get("/", getAllTours);
 //get tour
 router.get("/:id", getTour);
 //update tour
-router.put("/update/:id", updateTour);
+router.put("/:id", updateTour);
 //delete tour
-router.delete("/delete/:id", deleteTour);
+router.delete("/:id", deleteTour);
 
 export default router;

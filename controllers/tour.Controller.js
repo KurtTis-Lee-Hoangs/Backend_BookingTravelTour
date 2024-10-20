@@ -70,7 +70,7 @@ export const getAllTours = async (req, res) => {
     } else {
       res.status(200).json({
         success: true,
-        count: tours.length,
+        total: tours.length,
         message: "Successfully get all tours.",
         data: tours,
       });

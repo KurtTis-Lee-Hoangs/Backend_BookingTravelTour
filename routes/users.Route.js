@@ -4,7 +4,7 @@ import express from 'express'
 const router = express.Router()
 
 //get all user
-router.get('/users', getAllUser)
+router.get('/', getAllUser)
 //get one user
 router.get('/:id', getOneUser)
 //create a user

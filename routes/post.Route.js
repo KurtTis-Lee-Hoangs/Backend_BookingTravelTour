@@ -4,14 +4,14 @@ import { createPost, getAllPosts, getPost, deletePost, updatePost } from '../con
 const router = express.Router()
 
 //create a post
-router.post('/create-post', createPost)
+router.post('/', createPost)
 //get all posts
 router.get('/', getAllPosts)
 //get post
 router.get('/:id', getPost)
 //delete post
-router.delete('/delete/:id', deletePost)
+router.delete('/:id', deletePost)
 //update post
-router.put('/update/:id', updatePost)
+router.put('/:id', updatePost)
 
 export default router;

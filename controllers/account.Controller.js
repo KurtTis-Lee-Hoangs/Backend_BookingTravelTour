@@ -1,6 +1,8 @@
 import Account from "../models/account.Model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import asyncHandler from "express-async-handler";
+import {sendVerificationEmail} from "../utils/sendEmail.js"
 
 export const SignIn = async (req, res) => {
   const email = req.body.Email;
@@ -65,61 +67,54 @@ export const SignIn = async (req, res) => {
   }
 };
 
-export const SignUp = async (req, res) => {
-  const { Username, Password, Email } = req.body;
-  if (!Username || !Password || !Email) {
-    return res.status(400).json({
-      success: false,
-      message: "Username, Password, and Email are required.",
-    });
+export const SignUp = asyncHandler(async (req, res) => {
+  const { Username, Email, Password } = req.body;
+  // Make sure both email and password are provided
+  if (!Email || !Password) {
+    return res.status(400).json({ success: false, message: 'Email and password are required.' });
   }
-
-  const salt = bcrypt.genSaltSync(10);
-  const hash = bcrypt.hashSync(req.body.Password, salt);
-
-  const newAccount = new Account({
-    Username: req.body.Username,
-    Password: hash,
-    Email: req.body.Email,
-  });
-
   try {
-    const existingUsername = await Account.findOne({
-      Username: req.body.Username,
+    // Check if the user already exists
+    const existingUser = await Account.findOne({ Email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: 'Email is already registered.' });
+    }
+    // Create a new account
+    const account = new Account({
+      Username,
+      Email,
+      Password: bcrypt.hashSync(Password, 10), // hash the password
+      Active: false, // set account as not verified
     });
-    const existingEmail = await Account.findOne({ Email: req.body.Email });
-
-    if (existingUsername) {
-      return res.status(409).json({
-        success: false,
-        message: "Username already exists.",
-      });
+    // Save the account to the database
+    const savedAccount = await account.save();
+    // Check if the account was successfully created
+    if (!savedAccount) {
+      return res.status(500).json({ success: false, message: 'Account creation failed.' });
     }
-
-    if (existingEmail) {
-      return res.status(409).json({
-        success: false,
-        message: "Email already exists.",
-      });
-    }
-
-    const accountData = await newAccount.save();
-    return res.status(201).json({
+    // Generate a verification token
+    const verificationToken = jwt.sign({ userId: savedAccount._id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: '1h',
+    });
+    // Generate the verification link
+    const verificationLink = `${req.protocol}://${req.get('host')}/auth/verify-email/${verificationToken}`;
+    // Send the verification email
+    await sendVerificationEmail(Email, verificationLink);
+    res.status(201).json({
       success: true,
-      message: "Successfully created account.",
-      data: accountData,
+      message: 'Account registered successfully! Please verify your email to activate your account.',
     });
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error,
-    });
+    // Catch and return any errors
+    res.status(500).json({ success: false, message: error.message });
   }
-};
+});
 
 export const getAllAccount = async (req, res) => {
   try {
-    const account = await Account.find();
+    const page = parseInt(req.query.page);
+    const account = await Account.find().limit(10)
+    .skip(page * 10);;
     if (!account) {
       return res
         .status(404)
@@ -128,6 +123,7 @@ export const getAllAccount = async (req, res) => {
       res.status(200).json({
         success: true,
         messgae: "Successfully get all accounts.",
+        total: account.length,
         data: account,
       });
     }

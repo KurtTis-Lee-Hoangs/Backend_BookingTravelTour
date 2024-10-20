@@ -5,15 +5,13 @@ const router = express.Router()
 
 //user sign up
 router.post('/sign-up', SignUp)
-//user sign in
-router.get('/sign-in', SignIn)
 //get all user
-router.get('/accounts', getAllAccount)
+router.get('/', getAllAccount)
 //create account admin
 // router.post('/admin/create-account', createAccount)
 //delete account
-router.delete('/delete/:id', deleteAccount)
+router.delete('/:id', deleteAccount)
 
-router.put('/update/:id')
+router.put('/:id')
 
 export default router;
